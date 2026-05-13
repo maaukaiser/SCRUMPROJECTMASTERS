@@ -1,5 +1,5 @@
 var font = new FontFaceObserver('Press Start 2P');
-font.load().then(function() {  
+font.load().then(function () {
     const config = {
         type: Phaser.AUTO,
         width: 800,
@@ -10,16 +10,23 @@ font.load().then(function() {
             autoCenter: Phaser.Scale.CENTER_BOTH,
             width: 800,
             height: 600,
-            min: {
-                width: 320,
-                height: 240
-            },
-            max: {
-                width: 1600,
-                height: 1200
-            }
+            min: { width: 320, height: 240 },
+            max: { width: 1600, height: 1200 }
         },
-        scene: [StartScene, SeleccionarScene, MapaScene, Nivel1Scene, Nivel2Scene, Nivel3Scene, Nivel4Scene, Nivel5Scene, Nivel6Scene, GameOverScene, FinishScene]
+        scene: [
+            StartScene,
+            SeleccionarScene,
+            MapaScene,
+            // Teoría → Práctica para cada nivel
+            Teoria1Scene, Nivel1Scene,
+            Teoria2Scene, Nivel2Scene,
+            Teoria3Scene, Nivel3Scene,
+            Teoria4Scene, Nivel4Scene,
+            Teoria5Scene, Nivel5Scene,
+            Teoria6Scene, Nivel6Scene,
+            GameOverScene,
+            FinishScene
+        ]
     };
 
     new Phaser.Game(config);
