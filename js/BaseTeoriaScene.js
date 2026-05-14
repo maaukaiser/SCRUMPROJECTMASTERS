@@ -85,6 +85,7 @@ class BaseTeoriaScene extends Phaser.Scene {
         const teoria = this.config.teoria;
         const pagina = teoria.paginas[this.currentPage];
         const totalPages = teoria.paginas.length;
+        const isLast = this.currentPage === totalPages - 1;
         const W = this.sys.game.config.width;
 
         // ── Subtítulo de la página ─────────────────────────────
@@ -130,6 +131,54 @@ class BaseTeoriaScene extends Phaser.Scene {
             cursorY += p.height + 20;
         });
 
+        // ── Link "Saber más" (solo en última página) ───────────
+        if (isLast && teoria.link) {
+            cursorY += 6;
+
+            // Etiqueta pequeña arriba del link
+            const labelHint = this.add.text(
+                BX + BW / 2,
+                cursorY,
+                '¿Quieres saber más?',
+                {
+                    fontSize: '10px',
+                    fontFamily: '"Press Start 2P"',
+                    fill: '#282a1d',
+                    align: 'center'
+                }
+            ).setOrigin(0.5, 0);
+            this.pageObjects.push(labelHint);
+
+            cursorY += labelHint.height + 8;
+
+            // Link clickeable
+            const linkText = this.add.text(
+                BX + BW / 2,
+                cursorY,
+                `↗  ${teoria.link.label}`,
+                {
+                    fontSize: '12px',
+                    fontFamily: '"Press Start 2P"',
+                    fill: '#1E40AF',
+                    backgroundColor: '#FFE600',
+                    padding: { left: 12, right: 12, top: 6, bottom: 6 },
+                    align: 'center'
+                }
+            )
+            .setOrigin(0.5, 0)
+            .setInteractive({ useHandCursor: true })
+            .on('pointerover', function () {
+                this.setStyle({ fill: '#fff', backgroundColor: '#1A942C' });
+            })
+            .on('pointerout', function () {
+                this.setStyle({ fill: '#1E40AF', backgroundColor: '#FFE600' });
+            })
+            .on('pointerdown', () => {
+                window.open(teoria.link.url, '_blank', 'noopener,noreferrer');
+            });
+            this.pageObjects.push(linkText);
+        }
+
         // ── Indicador de página (puntos) ───────────────────────
         const DOT_SIZE = 10;
         const DOT_GAP = 18;
@@ -145,7 +194,6 @@ class BaseTeoriaScene extends Phaser.Scene {
         }
 
         // ── Botón de acción ────────────────────────────────────
-        const isLast = this.currentPage === totalPages - 1;
         const btnLabel = isLast ? '¡Comenzar Nivel!  ▶' : 'Siguiente  ▶';
         const btnColor = isLast ? '#1A942C' : '#514A8B';
 

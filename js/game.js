@@ -15,6 +15,7 @@ font.load().then(function () {
         },
         scene: [
             StartScene,
+            NombreScene,        // ← NUEVO: captura de nombre
             SeleccionarScene,
             MapaScene,
             // Teoría → Práctica para cada nivel
@@ -25,7 +26,8 @@ font.load().then(function () {
             Teoria5Scene, Nivel5Scene,
             Teoria6Scene, Nivel6Scene,
             GameOverScene,
-            FinishScene
+            FinishScene,
+            RankingScene        // ← NUEVO: tabla de mejores puntajes
         ]
     };
 

@@ -8,7 +8,7 @@ class BaseNivelScene extends Phaser.Scene {
     init() {
         this.currentQuestionIndex = 0;
         this.score = 0;
-        this.correctAnswers = 0; // Contador de respuestas correctas
+        this.correctAnswers = 0;
         this.questionTexts = [];
     }
 
@@ -26,19 +26,37 @@ class BaseNivelScene extends Phaser.Scene {
         background.displayWidth = this.sys.canvas.width;
         background.displayHeight = this.sys.canvas.height;
 
-        this.scoreText = this.add.text(20, 20, 'Score: 0', { 
-            fontSize: '32px', 
-            fill: '#FFF', 
+        // ── Score del nivel actual ───────────────────────────
+        this.scoreText = this.add.text(20, 20, 'Score: 0', {
+            fontSize: '24px',
+            fill: '#FFF',
             fontFamily: '"Press Start 2P"',
             stroke: '#000',
             strokeThickness: 4
         });
 
-        this.feedbackText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 50, "", { 
-            fontSize: '24px', 
+        // ── Score TOTAL acumulado + nombre del jugador ──────
+        const playerName = this.registry.get('playerName') || 'Jugador';
+        const totalScore = this.registry.get('totalScore') || 0;
+        this.playerInfoText = this.add.text(
+            this.sys.game.config.width - 20, 20,
+            `${playerName}\nTotal: ${totalScore}`,
+            {
+                fontSize: '14px',
+                fontFamily: '"Press Start 2P"',
+                fill: '#FFE600',
+                stroke: '#000',
+                strokeThickness: 3,
+                align: 'right',
+                lineSpacing: 6
+            }
+        ).setOrigin(1, 0);
+
+        this.feedbackText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 50, "", {
+            fontSize: '24px',
             fill: '#000',
             wordWrap: { width: 350 },
-            align: 'left' 
+            align: 'left'
         }).setOrigin(0.5);
 
         const personajeValue = this.registry.get('personaje');
@@ -73,7 +91,7 @@ class BaseNivelScene extends Phaser.Scene {
         const boxWidth = this.sys.game.config.width * 0.75;
         const boxHeight = this.sys.game.config.height * 0.45;
         const boxX = this.sys.game.config.width / 2 - boxWidth / 2;
-        const boxY = 50;
+        const boxY = 70;
         const box = this.add.graphics();
         box.fillStyle(0xA8B8A9, 0.88);
         box.lineStyle(3, 0x514A8B, 1);
@@ -130,7 +148,7 @@ class BaseNivelScene extends Phaser.Scene {
              .setInteractive({ useHandCursor: true })
              .on('pointerdown', () => this.checkAnswer(i))
              .on('pointerout', () => text.setStyle({ fill: '#000' }));
-            
+
             this.questionTexts.push(text);
         }
     }
@@ -144,12 +162,12 @@ class BaseNivelScene extends Phaser.Scene {
 
         if (selectedIndex === correctAnswerIndex - 1) {
             const timeTaken = this.time.now - this.questionStartTime;
-            let calculatedScore = 50; 
-            if (timeTaken < 10000) { 
-                calculatedScore += Math.floor((10000 - timeTaken) / 200); 
+            let calculatedScore = 50;
+            if (timeTaken < 10000) {
+                calculatedScore += Math.floor((10000 - timeTaken) / 200);
             }
             this.score += calculatedScore;
-            this.correctAnswers++; // Sumar respuesta correcta
+            this.correctAnswers++;
             this.scoreText.setText('Score: ' + this.score);
 
             selectedText.setStyle({ fill: '#1A942C' });
@@ -158,7 +176,7 @@ class BaseNivelScene extends Phaser.Scene {
             this.time.delayedCall(3200, this.nextQuestion, [], this);
         } else {
             selectedText.setStyle({ fill: '#F91010' });
-            this.launchFireball(); 
+            this.launchFireball();
             this.currentQuestionIndex++;
             this.time.delayedCall(2500, this.nextQuestion, [], this);
         }
@@ -192,6 +210,12 @@ class BaseNivelScene extends Phaser.Scene {
         });
     }
 
+    // Extrae el número de nivel desde el key de la escena: "Nivel3Scene" → 3
+    getLevelNumber() {
+        const match = this.scene.key.match(/Nivel(\d+)Scene/);
+        return match ? parseInt(match[1]) : 0;
+    }
+
     nextQuestion() {
         this.questionTexts.forEach(text => text.destroy());
         this.questionTexts = [];
@@ -200,13 +224,13 @@ class BaseNivelScene extends Phaser.Scene {
             this.showQuestion(this.questionBox);
             this.drawOvals(this.questionBox);
         } else {
-            // Enviar score, respuestas correctas y total a FinishScene
-            this.scene.start('FinishScene', { 
+            // Enviar score, respuestas correctas, total Y número de nivel a FinishScene
+            this.scene.start('FinishScene', {
                 score: this.score,
                 correctAnswers: this.correctAnswers,
-                totalQuestions: this.config.questions.length 
+                totalQuestions: this.config.questions.length,
+                levelNumber: this.getLevelNumber()
             });
         }
     }
 }
-

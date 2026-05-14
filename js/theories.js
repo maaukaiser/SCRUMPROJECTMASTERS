@@ -1,12 +1,20 @@
 // ============================================================
 //  theories.js  —  Contenido teórico para cada nivel
 // ============================================================
+//  Cada teoría tiene un campo `link` opcional que se muestra
+//  como un enlace clickeable en la ÚLTIMA página de la teoría.
+//  Puedes cambiar las URLs por las que prefieras.
+// ============================================================
 
 const teorias = {
 
     // ── NIVEL 1 ─ Scrum ──────────────────────────────────────
     teoria1: {
         titulo: "Scrum\nNivel 1",
+        link: {
+            label: "Guía oficial de Scrum",
+            url:   "https://scrumguides.org/scrum-guide.html"
+        },
         paginas: [
             {
                 subtitulo: "¿Qué es Scrum?",
@@ -35,6 +43,10 @@ const teorias = {
     // ── NIVEL 2 ─ Kanban ─────────────────────────────────────
     teoria2: {
         titulo: "Kanban\nNivel 2",
+        link: {
+            label: "Más sobre Kanban (Atlassian)",
+            url:   "https://www.atlassian.com/agile/kanban"
+        },
         paginas: [
             {
                 subtitulo: "¿Qué es Kanban?",
@@ -64,6 +76,10 @@ const teorias = {
     // ── NIVEL 3 ─ PMI / PMBOK ────────────────────────────────
     teoria3: {
         titulo: "PMI\nNivel 3",
+        link: {
+            label: "Sitio oficial del PMI",
+            url:   "https://www.pmi.org/"
+        },
         paginas: [
             {
                 subtitulo: "El PMBOK® Guide",
@@ -92,6 +108,10 @@ const teorias = {
     // ── NIVEL 4 ─ XP (Extreme Programming) ──────────────────
     teoria4: {
         titulo: "XP\nNivel 4",
+        link: {
+            label: "extremeprogramming.org",
+            url:   "http://www.extremeprogramming.org/"
+        },
         paginas: [
             {
                 subtitulo: "¿Qué es XP?",
@@ -120,6 +140,10 @@ const teorias = {
     // ── NIVEL 5 ─ PRINCE2 ────────────────────────────────────
     teoria5: {
         titulo: "PRINCE2\nNivel 5",
+        link: {
+            label: "PRINCE2 en Axelos",
+            url:   "https://www.axelos.com/certifications/propath/prince2-project-management"
+        },
         paginas: [
             {
                 subtitulo: "¿Qué es PRINCE2?",
@@ -148,6 +172,10 @@ const teorias = {
     // ── NIVEL 6 ─ Scrum Avanzado ─────────────────────────────
     teoria6: {
         titulo: "Scrum Avanz.\nNivel 6",
+        link: {
+            label: "Recursos de Scrum.org",
+            url:   "https://www.scrum.org/resources"
+        },
         paginas: [
             {
                 subtitulo: "Scrum Master y Conflictos",

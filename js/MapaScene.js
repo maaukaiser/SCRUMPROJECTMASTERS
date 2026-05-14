@@ -17,6 +17,8 @@ class MapaScene extends Phaser.Scene {
         if (this.Nivel5Button) this.Nivel5Button.destroy();
         if (this.Nivel6Button) this.Nivel6Button.destroy();
         if (this.InicioButton) this.InicioButton.destroy();
+        if (this.playerInfoText) this.playerInfoText.destroy();
+        if (this.playerInfoBg) this.playerInfoBg.destroy();
 
         this.InicioButton = this.homeButton(width / 1.23, height * 0.9, "Home", "StartScene", width, height);
 
@@ -27,6 +29,32 @@ class MapaScene extends Phaser.Scene {
         this.Nivel4Button = this.createLevelButton(width / 2.1,  height * 0.45, "4", "Teoria4Scene", width, height);
         this.Nivel5Button = this.createLevelButton(width / 3.7,  height * 0.21, "5", "Teoria5Scene", width, height);
         this.Nivel6Button = this.createLevelButton(width / 1.55, height * 0.07, "6", "Teoria6Scene", width, height);
+
+        // ── Panel de información del jugador ─────────────────
+        const playerName  = this.registry.get('playerName')  || 'Jugador';
+        const totalScore  = this.registry.get('totalScore')  || 0;
+        const levelsDone  = Object.keys(this.registry.get('levelsCompleted') || {}).length;
+
+        // Fondo del panel
+        this.playerInfoBg = this.add.graphics();
+        this.playerInfoBg.fillStyle(0x282a1d, 0.85);
+        this.playerInfoBg.lineStyle(2, 0xDED947, 1);
+        this.playerInfoBg.fillRoundedRect(10, 10, 260, 70, 8);
+        this.playerInfoBg.strokeRoundedRect(10, 10, 260, 70, 8);
+
+        // Texto del jugador
+        this.playerInfoText = this.add.text(
+            20, 22,
+            `${playerName}\nScore: ${totalScore}  |  ${levelsDone}/6`,
+            {
+                fontSize: '13px',
+                fontFamily: '"Press Start 2P"',
+                fill: '#FFE600',
+                stroke: '#000',
+                strokeThickness: 3,
+                lineSpacing: 8
+            }
+        );
     }
 
     create() {
