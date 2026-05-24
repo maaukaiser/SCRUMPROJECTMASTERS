@@ -22,6 +22,8 @@ class BaseNivelScene extends Phaser.Scene {
     }
 
     create() {
+        this.initAudio();
+
         const background = this.add.image(0, 0, this.config.bgKey).setOrigin(0, 0);
         background.displayWidth = this.sys.canvas.width;
         background.displayHeight = this.sys.canvas.height;
@@ -183,6 +185,9 @@ class BaseNivelScene extends Phaser.Scene {
     }
 
     launchFireball() {
+        if (this.fireballSynth) {
+            this.fireballSynth.triggerAttackRelease("C2", "8n");
+        }
         const fireball = this.add.image(650, 500, 'fireball').setScale(2);
         this.tweens.add({
             targets: fireball,
@@ -193,6 +198,10 @@ class BaseNivelScene extends Phaser.Scene {
     }
 
     lanzarEspada() {
+        if (this.swordSynth) {
+            this.swordSynth.triggerAttackRelease("C5", "16n");
+            setTimeout(() => { if(this.swordSynth) this.swordSynth.triggerAttackRelease("E5", "8n"); }, 150);
+        }
         const espada = this.add.image(this.personaje.x + 40, this.personaje.y + 20, 'espada').setScale(0.1);
         this.tweens.add({
             targets: espada,
@@ -231,6 +240,50 @@ class BaseNivelScene extends Phaser.Scene {
                 totalQuestions: this.config.questions.length,
                 levelNumber: this.getLevelNumber()
             });
+        }
+    }
+
+    initAudio() {
+        if (typeof Tone !== 'undefined') {
+            if (!window.bgmPlaying) {
+                Tone.start();
+                const reverb = new Tone.Reverb(3).toDestination();
+                const bgSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 2, decay: 1, sustain: 0.5, release: 2 }
+                }).connect(reverb);
+                bgSynth.volume.value = -18; // Música tranquila, volumen bajo
+
+                const chordProgression = [
+                    ["C4", "E4", "G4"],
+                    ["A3", "C4", "E4"],
+                    ["F3", "A3", "C4"],
+                    ["G3", "B3", "D4"]
+                ];
+                let step = 0;
+                Tone.Transport.scheduleRepeat(time => {
+                    const chord = chordProgression[step % chordProgression.length];
+                    bgSynth.triggerAttackRelease(chord, "1m", time);
+                    step++;
+                }, "2m");
+                
+                Tone.Transport.start();
+                window.bgmPlaying = true;
+            }
+
+            this.swordSynth = new Tone.Synth({
+                oscillator: { type: "square" },
+                envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 }
+            }).toDestination();
+            this.swordSynth.volume.value = -12;
+
+            this.fireballSynth = new Tone.MembraneSynth({
+                pitchDecay: 0.05,
+                octaves: 4,
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.01, decay: 0.4, sustain: 0.01, release: 1.4 }
+            }).toDestination();
+            this.fireballSynth.volume.value = -8;
         }
     }
 }
